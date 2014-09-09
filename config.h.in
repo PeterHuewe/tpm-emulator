@@ -1,0 +1,33 @@
+/* Software-based Trusted Platform Module (TPM) Emulator
+ * Copyright (C) 2004-2010 Mario Strasser <mast@gmx.net>
+ *
+ * This module is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * This module is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * $Id: config.h.in 426 2010-02-22 17:11:58Z mast $
+ */
+
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
+/* project and build version */
+#define VERSION_MAJOR ${TPM_Emulator_VERSION_MAJOR}
+#define VERSION_MINOR ${TPM_Emulator_VERSION_MINOR}
+#define VERSION_BUILD ${TPM_Emulator_VERSION_BUILD}
+
+/* TDDL and LKM configuration */
+#define TPM_SOCKET_NAME  "${TPM_SOCKET_NAME}"
+#define TPM_STORAGE_NAME "${TPM_STORAGE_NAME}"
+#define TPM_DEVICE_NAME  "${TPM_DEVICE_NAME}"
+#define TPM_LOG_FILE     "${TPM_LOG_FILE}"
+#define TPM_CMD_BUF_SIZE 4096
+
+#endif /* _CONFIG_H_ */
+
