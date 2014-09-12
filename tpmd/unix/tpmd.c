@@ -216,7 +216,7 @@ static void init_signal_handler(void)
 
 static void daemonize(void)
 {
-    pid_t sid, pid;
+    pid_t sid, pid, fd;
     info("daemonizing process");
     pid = fork();
     if (pid < 0) {
@@ -234,9 +234,16 @@ static void daemonize(void)
         error("chdir() failed: %s", strerror(errno));
         exit(EXIT_FAILURE);
     }
-    close(STDIN_FILENO);
-    close(STDOUT_FILENO);
-    close(STDERR_FILENO);
+
+    fd = open("/dev/null", O_RDWR);
+    if (fd < 0) {
+        error("open(/dev/null) failed: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    dup2(fd, STDIN_FILENO);
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd, STDERR_FILENO);
+    close(fd);
     is_daemon = 1;
     info("process was successfully daemonized: pid=%d sid=%d", pid, sid);
 }
