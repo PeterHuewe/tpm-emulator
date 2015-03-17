@@ -5,7 +5,7 @@
 
 # kernel settings
 KERNEL_RELEASE := $(shell uname -r)
-KERNEL_BUILD   := /lib/modules/$(KERNEL_RELEASE)/build
+KERNEL_BUILD   ?= /lib/modules/$(KERNEL_RELEASE)/build
 MOD_SUBDIR     := misc
 
 # module settings
@@ -17,10 +17,10 @@ MAKEFLAGS      += --no-print-directory
 EXTRA_CFLAGS   += -Wall -Werror
 
 all:
-	@$(MAKE) -C $(KERNEL_BUILD) M=$(CURDIR) modules
+	@$(MAKE) LD=$(LD) CC=$(CC) ARCH=$(ARCH) -C $(KERNEL_BUILD) M=$(CURDIR) modules
 
 clean:
-	@$(MAKE) -C $(KERNEL_BUILD) M=$(CURDIR) clean
+	@$(MAKE) LD=$(LD) CC=$(CC) ARCH=$(ARCH) -C $(KERNEL_BUILD) M=$(CURDIR) clean
 	@rm -f Modules.symvers tpmd_dev.rules
 
 TPM_GROUP ?= tss
@@ -30,7 +30,7 @@ tpmd_dev.rules: tpmd_dev.rules.in
 	@sed -e "s/\$$TPM_GROUP/$(TPM_GROUP)/g" tpmd_dev.rules.in > tpmd_dev.rules
 
 install: tpmd_dev.rules
-	@$(MAKE) -C $(KERNEL_BUILD) M=$(CURDIR) INSTALL_MOD_PATH=$(DESTDIR) modules_install
+	@$(MAKE) LD=$(LD) CC=$(CC) ARCH=$(ARCH) -C $(KERNEL_BUILD) M=$(CURDIR) INSTALL_MOD_PATH=$(DESTDIR) modules_install
 	@$(INSTALL) -m 644 -D tpmd_dev.rules $(DESTDIR)/etc/udev/rules.d/80-tpmd_dev.rules
 
 .PHONY: all clean install
