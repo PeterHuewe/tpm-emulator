@@ -2,7 +2,7 @@
 
 BUILD_DIR="build"
 
-if [ "$1" == "clean" ]; then
+if [ "$1" = "clean" ]; then
   rm -rf $BUILD_DIR
 fi
 
