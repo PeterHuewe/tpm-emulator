@@ -3,7 +3,9 @@
 #
 # $Id: Makefile 364 2010-02-11 10:24:45Z mast $
 
-# kernel settings
+# kernel settingsRCH settings
+ARCH		?= $(shell uname -m)
+
 KERNEL_RELEASE := $(shell uname -r)
 KERNEL_BUILD   ?= /lib/modules/$(KERNEL_RELEASE)/build
 MOD_SUBDIR     := misc
