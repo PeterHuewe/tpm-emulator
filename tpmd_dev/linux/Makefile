@@ -3,6 +3,9 @@
 #
 # $Id: Makefile 364 2010-02-11 10:24:45Z mast $
 
+# temp ARCH settings
+ARCH		   ?= $(shell uname -m | cut -d '_' -f 1)
+
 # kernel settings
 KERNEL_RELEASE := $(shell uname -r)
 KERNEL_BUILD   ?= /lib/modules/$(KERNEL_RELEASE)/build
