@@ -15,7 +15,7 @@
  */
 
 #ifndef _TPM_DATA_H_
-#define _TPM_DATA_H
+#define _TPM_DATA_H_
 
 #include "tpm_structures.h"
 
