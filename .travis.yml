@@ -3,7 +3,7 @@ addons:
   apt:
     packages:
      - libgmp-dev 
-     - linux-source
+     - linux-kernel-headers
      - build-essential
      - kernel-package
      - libssl-dev 
