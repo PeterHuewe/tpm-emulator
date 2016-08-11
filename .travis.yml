@@ -2,5 +2,9 @@ language: c
 addons:
   apt:
     packages:
-      libgmp-dev linux-source build-essential kernel-package libssl-dev 
+     - libgmp-dev 
+     - linux-source
+     - build-essential
+     - kernel-package
+     - libssl-dev 
 script:  mkdir -p build && cd build && cmake ../ && make && cd ..
