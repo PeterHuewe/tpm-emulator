@@ -1,2 +1,6 @@
 language: c
-install: ./build.sh
+addons:
+  apt:
+    packages:
+      libgmp-dev
+script:  mkdir -p build && cd build && cmake ../ && make && cd ..
