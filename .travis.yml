@@ -2,5 +2,5 @@ language: c
 addons:
   apt:
     packages:
-      libgmp-dev
+      libgmp-dev linux-kernel-headers
 script:  mkdir -p build && cd build && cmake ../ && make && cd ..
