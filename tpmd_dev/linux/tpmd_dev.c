@@ -140,7 +140,11 @@ static int tpmd_handle_command(const uint8_t *in, uint32_t in_size)
 #endif
   oldmm = get_fs();
   set_fs(KERNEL_DS);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,7,0)
   res = sock_recvmsg(tpmd_sock, &msg, tpm_response.size, 0);
+#else
+  res = sock_recvmsg(tpmd_sock, &msg, 0);
+#endif
   set_fs(oldmm);
   if (res < 0) {
     error("sock_recvmsg() failed: %d\n", res);
