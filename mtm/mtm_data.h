@@ -15,7 +15,7 @@
  */
 
 #ifndef _MTM_DATA_H_
-#define _MTM_DATA_H
+#define _MTM_DATA_H_
 
 #include "mtm_structures.h"
 
