@@ -103,24 +103,13 @@ static void tpmd_disconnect(void)
 static int tpmd_handle_command(const uint8_t *in, uint32_t in_size)
 {
   int res;
-  mm_segment_t oldmm;
   struct msghdr msg;
-  struct iovec iov;
+  struct kvec vec;
   /* send command to tpmd */
   memset(&msg, 0, sizeof(msg));
-  iov.iov_base = (void*)in;
-  iov.iov_len = in_size;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,19,0)
-  msg.msg_iov = &iov;
-  msg.msg_iovlen = 1;
-#else
-  iov_iter_init(&msg.msg_iter, WRITE, &iov, 1, 1);
-#endif
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0)
-  res = sock_sendmsg(tpmd_sock, &msg, in_size);
-#else
-  res = sock_sendmsg(tpmd_sock, &msg);
-#endif
+  vec.iov_base = (void*)in;
+  vec.iov_len = in_size;
+  res = kernel_sendmsg(tpmd_sock, &msg, &vec, 1, in_size);
   if (res < 0) {
     error("sock_sendmsg() failed: %d\n", res);
     return res;
@@ -130,18 +119,9 @@ static int tpmd_handle_command(const uint8_t *in, uint32_t in_size)
   tpm_response.data = kmalloc(tpm_response.size, GFP_KERNEL);
   if (tpm_response.data == NULL) return -1;
   memset(&msg, 0, sizeof(msg));
-  iov.iov_base = (void*)tpm_response.data;
-  iov.iov_len = tpm_response.size;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,19,0)
-   msg.msg_iov = &iov;
-   msg.msg_iovlen = 1;
-#else
-  iov_iter_init(&msg.msg_iter, WRITE, &iov, 1, 1);
-#endif
-  oldmm = get_fs();
-  set_fs(KERNEL_DS);
-  res = sock_recvmsg(tpmd_sock, &msg, tpm_response.size, 0);
-  set_fs(oldmm);
+  vec.iov_base = (void*)tpm_response.data;
+  vec.iov_len = tpm_response.size;
+  res = kernel_recvmsg(tpmd_sock, &msg, &vec, 1, tpm_response.size, 0);
   if (res < 0) {
     error("sock_recvmsg() failed: %d\n", res);
     tpm_response.data = NULL;
