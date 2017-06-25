@@ -87,6 +87,8 @@ static TPM_RESULT cap_mtm_permanent_data(UINT32 subCapSize, BYTE *subCap,
         tpm_free(*resp);
         return TPM_FAIL;
       }
+      error("[TPM_CAP_MTM_PERMANENT_DATA] SubCap 2 not Implemented");
+      return TPM_FAIL; // TODO not implemented.
 
     case 3:
       return return_UINT32(respSize, resp,
