@@ -434,7 +434,7 @@ TPM_RESULT TPM_ChangeAuthAsymFinish(TPM_KEY_HANDLE parentHandle,
   tpm_hmac_final(&hmac_ctx, b1.digest);
   /* 6. The TPM SHALL compare b1 with newAuthLink. The TPM SHALL
         indicate a failure if the values do not match. */
-  if (memcmp(&b1, &newAuthLink, sizeof(TPM_HMAC))) {
+  if (memcmp(&b1, newAuthLink, sizeof(TPM_HMAC))) {
     debug("TPM_ChangeAuthAsymFinish(): newAuthLink value does not match.");
     return TPM_FAIL;
   }
