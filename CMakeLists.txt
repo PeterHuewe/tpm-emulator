@@ -67,7 +67,9 @@ include_directories(${CMAKE_BINARY_DIR})
 
 # add internal libraries
 add_subdirectory(tpm)
-add_subdirectory(mtm)
+if(MTM_EMULATOR)
+    add_subdirectory(mtm)
+endif()
 add_subdirectory(crypto)
 
 # add TDDL
