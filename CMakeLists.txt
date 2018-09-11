@@ -76,7 +76,12 @@ add_subdirectory(crypto)
 add_subdirectory(tddl)
 
 # add kernel modules
-add_subdirectory(tpmd_dev)
+if(NOT DEFINED BUILD_DEV)
+    set(BUILD_DEV ON)
+endif()
+if(BUILD_DEV)
+    add_subdirectory(tpmd_dev)
+endif()
 
 # add executables
 add_subdirectory(tpmd)
