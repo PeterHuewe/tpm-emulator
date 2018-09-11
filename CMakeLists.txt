@@ -6,6 +6,7 @@
 project(TPM_Emulator C)
 
 cmake_minimum_required(VERSION 2.4)
+include(GNUInstallDirs)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 if(COMMAND cmake_policy)
 cmake_policy(SET CMP0003 NEW)
@@ -66,14 +67,21 @@ include_directories(${CMAKE_BINARY_DIR})
 
 # add internal libraries
 add_subdirectory(tpm)
-add_subdirectory(mtm)
+if(MTM_EMULATOR)
+    add_subdirectory(mtm)
+endif()
 add_subdirectory(crypto)
 
 # add TDDL
 add_subdirectory(tddl)
 
 # add kernel modules
-add_subdirectory(tpmd_dev)
+if(NOT DEFINED BUILD_DEV)
+    set(BUILD_DEV ON)
+endif()
+if(BUILD_DEV)
+    add_subdirectory(tpmd_dev)
+endif()
 
 # add executables
 add_subdirectory(tpmd)

@@ -13,5 +13,5 @@ target_link_libraries(tpmd mtm tpm tpm_crypto)
 else()
 target_link_libraries(tpmd tpm tpm_crypto)
 endif()
-install(TARGETS tpmd RUNTIME DESTINATION bin)
+install(TARGETS tpmd RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
