@@ -67,6 +67,7 @@ include_directories(${CMAKE_BINARY_DIR})
 
 # add internal libraries
 add_subdirectory(tpm)
+option(MTM_EMULATOR "MTM emulator")
 if(MTM_EMULATOR)
     add_subdirectory(mtm)
 endif()
@@ -76,9 +77,7 @@ add_subdirectory(crypto)
 add_subdirectory(tddl)
 
 # add kernel modules
-if(NOT DEFINED BUILD_DEV)
-    set(BUILD_DEV ON)
-endif()
+option(BUILD_DEV "Build linux kernel module" ON)
 if(BUILD_DEV)
     add_subdirectory(tpmd_dev)
 endif()
