@@ -61,6 +61,9 @@ MODULE_PARM_DESC(tpmd_socket_name, " Sets the name of the TPM daemon socket.");
 /* TPM lock */
 static struct semaphore tpm_mutex;
 
+/* TPM request buffer */
+static char req_buf[TPM_CMD_BUF_SIZE];
+
 /* TPM command response */
 static struct {
   uint8_t *data;
@@ -160,7 +163,7 @@ static int tpm_release(struct inode *inode, struct file *file)
   return 0;
 }
 
-static ssize_t tpm_read(struct file *file, char *buf, size_t count, loff_t *ppos)
+static ssize_t tpm_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 {
   debug("%s(%zd)", __FUNCTION__, count);
   down(&tpm_mutex);
@@ -179,16 +182,26 @@ static ssize_t tpm_read(struct file *file, char *buf, size_t count, loff_t *ppos
   return count;
 }
 
-static ssize_t tpm_write(struct file *file, const char *buf, size_t count, loff_t *ppos)
+static ssize_t tpm_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
 {
   debug("%s(%zd)", __FUNCTION__, count);
+
+  if (count > sizeof(req_buf))
+    return -EFAULT;
+
   down(&tpm_mutex);
   *ppos = 0;
   if (tpm_response.data != NULL) {
     kfree(tpm_response.data);
     tpm_response.data = NULL;
   }
-  if (tpmd_handle_command(buf, count) != 0) {
+
+  if (copy_from_user(req_buf, buf, count)) {
+    up(&tpm_mutex);
+    return -EFAULT;
+  }
+
+  if (tpmd_handle_command(req_buf, count) != 0) {
     count = -EILSEQ;
     tpm_response.data = NULL;
   }
@@ -203,15 +216,26 @@ static long tpm_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
   debug("%s(%d, %p)", __FUNCTION__, cmd, (char*)arg);
   if (cmd == TPMIOC_TRANSMIT) {
-    uint8_t *ptr = (uint8_t*)(arg + 2);
-    uint32_t count = ((uint32_t)ptr[0] << 24) | ((uint32_t)ptr[1] << 16) |
-                     ((uint32_t)ptr[2] <<  8) | (uint32_t)ptr[3];
+    uint32_t count;
+
+    if (get_user(count, (uint32_t __user *)(arg+2)))
+      return -EFAULT;
+
+    count = be32_to_cpu(count);
+    if (count > sizeof(req_buf))
+      return -EFAULT;
+
     down(&tpm_mutex);
+    if (copy_from_user(req_buf, (void __user *)arg, count)) {
+      up(&tpm_mutex);
+      return -EFAULT;
+    }
+
     if (tpm_response.data != NULL) {
       kfree(tpm_response.data);
       tpm_response.data = NULL;
     }
-    if (tpmd_handle_command((char*)arg, count) == 0) {
+    if (tpmd_handle_command(req_buf, count) == 0) {
       tpm_response.size -= copy_to_user((char*)arg, tpm_response.data, tpm_response.size);
       kfree(tpm_response.data);
       tpm_response.data = NULL;
