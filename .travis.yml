@@ -7,4 +7,4 @@ addons:
      - build-essential
      - kernel-package
      - libssl-dev 
-script:  mkdir -p build && cd build && cmake ../ && make && cd ..
+script:  mkdir -p build && cd build && cmake -DBUILD_DEV=OFF ../ && make && cd ..
