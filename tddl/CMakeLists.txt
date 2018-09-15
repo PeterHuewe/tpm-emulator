@@ -15,9 +15,9 @@ elseif(WIN32)
   set_target_properties(tddl PROPERTIES PREFIX "")
 endif()
 
-install(TARGETS tddl DESTINATION lib)
-install(TARGETS tddl_static DESTINATION lib)
-install(FILES "tddl.h" DESTINATION include)
+install(TARGETS tddl DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS tddl_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES "tddl.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(test_tddl test_tddl.c)
