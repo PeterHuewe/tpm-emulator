@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <config.h>
-#include "tddl.h"
+#include "tddl-tpm-emulator.h"
 
 /* device and socket names */
 static const char *tpm_device_name = TPM_DEVICE_NAME;

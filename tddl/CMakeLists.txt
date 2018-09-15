@@ -3,23 +3,23 @@
 #
 # $Id: CMakeLists.txt 455 2010-09-17 18:34:04Z mast $
 
-set(tddl_SRCS "tddl.c" "tddl.h")
-add_library(tddl SHARED ${tddl_SRCS})
-add_library(tddl_static STATIC ${tddl_SRCS})
+set(tddl-tpm-emulator_SRCS "tddl.c" "tddl-tpm-emulator.h")
+add_library(tddl-tpm-emulator SHARED ${tddl-tpm-emulator_SRCS})
+add_library(tddl-tpm-emulator_static STATIC ${tddl-tpm-emulator_SRCS})
 if(UNIX)
-  set_target_properties(tddl PROPERTIES SOVERSION "1.2"
+  set_target_properties(tddl-tpm-emulator PROPERTIES SOVERSION "1.2"
     VERSION "1.2.${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}")
-  set_target_properties(tddl_static PROPERTIES OUTPUT_NAME tddl)
+  set_target_properties(tddl-tpm-emulator_static PROPERTIES OUTPUT_NAME tddl-tpm-emulator)
 elseif(WIN32)
-  set_target_properties(tddl PROPERTIES OUTPUT_NAME ifxtpm)
-  set_target_properties(tddl PROPERTIES PREFIX "")
+  set_target_properties(tddl-tpm-emulator PROPERTIES OUTPUT_NAME ifxtpm)
+  set_target_properties(tddl-tpm-emulator PROPERTIES PREFIX "")
 endif()
 
-install(TARGETS tddl DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(TARGETS tddl_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES "tddl.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS tddl-tpm-emulator DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS tddl-tpm-emulator_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES "tddl-tpm-emulator.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(test_tddl test_tddl.c)
-target_link_libraries(test_tddl tddl_static)
+target_link_libraries(test_tddl tddl-tpm-emulator_static)
 

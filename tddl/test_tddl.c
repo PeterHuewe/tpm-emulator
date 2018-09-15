@@ -15,7 +15,7 @@
  */
 
 #include <stdio.h>
-#include <tddl.h>
+#include <tddl-tpm-emulator.h>
 
 const char *get_error(TSS_RESULT res)
 {
