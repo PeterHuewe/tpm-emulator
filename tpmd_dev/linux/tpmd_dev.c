@@ -90,7 +90,7 @@ static int tpmd_connect(char *socket_name)
     (struct sockaddr*)&addr, sizeof(struct sockaddr_un), 0);
   if (res != 0) {
     error("sock_connect() failed: %d\n", res);
-    tpmd_sock->ops->release(tpmd_sock);
+    sock_release(tpmd_sock);
     tpmd_sock = NULL;
     return res;
   }
@@ -99,7 +99,7 @@ static int tpmd_connect(char *socket_name)
 
 static void tpmd_disconnect(void)
 {
-  if (tpmd_sock != NULL) tpmd_sock->ops->release(tpmd_sock);
+  if (tpmd_sock != NULL) sock_release(tpmd_sock);
   tpmd_sock = NULL;
 }
 
