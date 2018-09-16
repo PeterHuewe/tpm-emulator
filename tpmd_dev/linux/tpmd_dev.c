@@ -85,7 +85,7 @@ static int tpmd_connect(char *socket_name)
     return res;
   }
   addr.sun_family = AF_UNIX;
-  strncpy(addr.sun_path, socket_name, sizeof(addr.sun_path));
+  strncpy(addr.sun_path, socket_name, sizeof(addr.sun_path)-1);
   res = tpmd_sock->ops->connect(tpmd_sock,
     (struct sockaddr*)&addr, sizeof(struct sockaddr_un), 0);
   if (res != 0) {
