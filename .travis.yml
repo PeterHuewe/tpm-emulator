@@ -1,3 +1,10 @@
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "YDatbNgEkwIy4ACL7ZgcGHOGBI2bcjM0ULbkPmGzOTt0kHU8mQ3B9eA0B43cNTgyDU9irA+3YKlym/kJ93xfIAQBn/yOwHydRZS5e1MQx8UTbfw3fzJvTjpKjwEz52X2W4QOBqxHdzegnd9teC/aaGItNSkCQ0CNJvSJk8SmuQw="
+
+
 language: c
 addons:
   apt:
@@ -7,4 +14,18 @@ addons:
      - build-essential
      - kernel-package
      - libssl-dev 
+
+before_install:
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  coverity_scan:
+    project:
+      name: "PeterHuewe/tpm-emulator"
+      description: "Famous TPM 1.2 Emulator by Marco Strasser"
+    notification_email: peterhuewe@gmx.de
+    build_command_prepend: "mkdir -p build && cd build"
+    build_command: "cmake -DBUILD_DEV=OFF ../ && make "
+    branch_pattern: master
+
 script:  mkdir -p build && cd build && cmake -DBUILD_DEV=OFF ../ && make && cd ..
