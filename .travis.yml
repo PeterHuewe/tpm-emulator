@@ -1,3 +1,6 @@
+env:
+  global:
+    secure: "J29/ntLw9L6cZwmzz/cuYKs7lZ30zGcAW+3BRys56BcBNGy/h1i/ScKuVNTVeGngYfnpVsifDheZNOv7u+WI6cjOiA3mQaf+vtYy/VPp49GVIKhrt1H8RK0+ZalkOy3V3FAIecH3BxbwAeGhmDmEbSr/Prhy3ijIVF/67j/Qx+GUNkY6AFWO78NUvsrx88RIbGJ6lMVz6RDdtmzwNnIS1cXRkxmeK8tfr1brf2jQoqSzUswmfLAYy/n0RoZww7VzcL5O/9nATon6b36hG8XAU04AINqko19/ZxQWUuX2kHwGe3UTRcHvzJSB+z2I/vumvnfLSoQI9Q4DO/uvd62ap+V/4Rbi2tEvNb/kqHMpB9BswCCJTZkGqRcCvgMjzLbVpbewQmlH4n2zD35uReeIiZibileG5flkVIa3x3Fw/mo0nWa5YKCE49cQsETPRLBdfleyqtFIaEScVxgDIWvxxJq9mCybvIZ9VgsthoKtcspCUcNen8ptNwzuGd2TzHeL5rs1WLJGwSlnIzGlRrbNsDb+HHgDCSZr7AKTE9H+JFbg3gKu8NtoM/M+KPXDUn03Z0RFYildsMh1Q8C58ZeHTPbX/ZMZN8VWRQfKD7YANueOEji37jeSDpWY2Iyq0Q0d65M/slm1jrR+x+C98VBpB/Iw8o1R/qOqFlqL9MXX6mg="
 language: c
 addons:
   apt:
@@ -8,23 +11,17 @@ addons:
      - kernel-package
      - libssl-dev 
 
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "HDuWVRc2G6KH5HlVntldQYhnmMF5C4pUqYmGKdiaPgXEa2TRMeMR9HasioEiecZMzUbLCqFURlVgnsJov2uUjbrrvVODgJDzb/QU5Y0RD6ajjAgzHhKi4J3QMaO2QjHcvTdXv4IDIxwtqXS5MAsv2nXcDA+GT9qTCFXhQ0RwWvc="
-
 before_install:
-  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 addons:
   coverity_scan:
     project:
       name: "PeterHuewe/tpm-emulator"
-      description: "<Your project description here>"
+      description: "PeterHuewe/tpm-emulator"
     notification_email: peterhuewe@gmx.de
-    build_command_prepend:  mkdir -p build && cd build 
-    build_command: cmake -DBUILD_DEV=OFF ../ && make
-    branch_pattern: coverity_scan
+    build_command_prepend: mkdir -p build && cd build && cmake -DBUILD_DEV=OFF ../
+    build_command: make
+    branch_pattern: master
 
 script:  mkdir -p build && cd build && cmake -DBUILD_DEV=OFF ../ && make && cd ..
