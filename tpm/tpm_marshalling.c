@@ -585,7 +585,7 @@ int tpm_unmarshal_TPM_CERTIFY_INFO(BYTE **ptr, UINT32 *length, TPM_CERTIFY_INFO 
       || tpm_unmarshal_UINT32(ptr, length, &v->PCRInfoSize)
       || (v->PCRInfoSize > 0
           && tpm_unmarshal_TPM_PCR_INFO(ptr, length, &v->PCRInfo))
-      || (!(v->migrationAuthoritySize = 0) && v->tag == TPM_TAG_CERTIFY_INFO2
+      || (v->tag == TPM_TAG_CERTIFY_INFO2
           && tpm_unmarshal_UINT32(ptr, length, &v->migrationAuthoritySize))
       || (v->tag == TPM_TAG_CERTIFY_INFO2 && v->migrationAuthoritySize > 0
           && tpm_unmarshal_BLOB(ptr, length, &v->migrationAuthority,
