@@ -121,17 +121,17 @@ static void parse_options(int argc, char **argv)
                 debug("using unix socket '%s'", opt_socket_name);
                 break;
             case 'U':
-		opt_socket_name = NULL;
-		break;
+                opt_socket_name = NULL;
+                break;
             case 'e':
                 opt_dev_name = optarg;
-		set_dev = 1;
+                set_dev = 1;
                 debug("using emulation device '%s'", opt_dev_name);
-		break;
+                break;
             case 'E':
-		opt_dev_name = NULL;
-		set_dev = 0;
-		break;
+                opt_dev_name = NULL;
+                set_dev = 0;
+                break;
             case 'o':
                 pwd  = getpwnam(optarg);
                 if (pwd == NULL) {
@@ -164,7 +164,7 @@ static void parse_options(int argc, char **argv)
     }
 
     if (set_dev == 0 && access(opt_dev_name, F_OK) < 0)
-	opt_dev_name = NULL;
+        opt_dev_name = NULL;
     if (!opt_socket_name && !opt_dev_name) {
             error("both socket and emulator device are unavailable\n");
             print_usage(argv[0]);
@@ -202,7 +202,7 @@ static void parse_options(int argc, char **argv)
 static void switch_uid_gid(void)
 {
     if (opt_gid != getgid()) {
-        info("switching effective group ID to %d", opt_gid);  
+        info("switching effective group ID to %d", opt_gid);
         if (setgid(opt_gid) == -1) {
             error("switching effective group ID to %d failed: %s", opt_gid, strerror(errno));
             exit(EXIT_FAILURE);
@@ -353,22 +353,22 @@ static int handle_emuldev_command(int devfd)
     in_len = read(devfd, in, sizeof(in));
     debug("received %d bytes", in_len);
     if (in_len <= 0)
-	return errno == -EAGAIN ? 0 : in_len;
-	
+        return errno == -EAGAIN ? 0 : in_len;
+
     out = NULL;
     res = tpm_handle_command(in, in_len, &out, &out_len);
     if (res < 0) {
-	error("tpm_handle_command() failed");
-	if (ioctl(devfd, 0, 0) < 0)
-	    return -1;
+        error("tpm_handle_command() failed");
+        if (ioctl(devfd, 0, 0) < 0)
+            return -1;
     } else {
-	debug("sending %d bytes", out_len);
-	res = write(devfd, out, out_len);
-	if (res < 0) {
-	    error("write(%d) failed: %s", out_len, strerror(errno));
-	    if (errno != ECANCELED)
-		return -1;
-	}
+        debug("sending %d bytes", out_len);
+        res = write(devfd, out, out_len);
+        if (res < 0) {
+            error("write(%d) failed: %s", out_len, strerror(errno));
+            if (errno != ECANCELED)
+                return -1;
+        }
     }
     tpm_free(out);
     return 0;
@@ -387,14 +387,14 @@ static void main_loop(void)
     info("staring main loop");
     /* open UNIX socket */
     if (opt_socket_name) {
-	sock = init_socket(opt_socket_name);
-	if (sock < 0) exit(EXIT_FAILURE);
+        sock = init_socket(opt_socket_name);
+        if (sock < 0) exit(EXIT_FAILURE);
     }
 
     if (opt_dev_name) {
-	devfd = init_device(opt_dev_name);
-	if (devfd < 0)
-	    exit(EXIT_FAILURE);
+        devfd = init_device(opt_dev_name);
+        if (devfd < 0)
+            exit(EXIT_FAILURE);
     }
 
     /* init tpm emulator */
@@ -410,35 +410,35 @@ static void main_loop(void)
     while (!stopflag) {
         /* wait for incomming connections */
         debug("waiting for connections...");
-	npoll = 0;
-	if (sock != -1) {
-	    poll_table[npoll].fd = sock;
-	    poll_table[npoll].events = POLLIN;
-	    poll_table[npoll++].revents = 0;
-	}
-	if (devfd != -1) {
-	    poll_table[npoll].fd = devfd;
-	    poll_table[npoll].events = POLLIN | POLLERR;
-	    poll_table[npoll++].revents = 0;
-	}
-	res = poll(poll_table, npoll, -1);
+        npoll = 0;
+        if (sock != -1) {
+            poll_table[npoll].fd = sock;
+            poll_table[npoll].events = POLLIN;
+            poll_table[npoll++].revents = 0;
+        }
+        if (devfd != -1) {
+            poll_table[npoll].fd = devfd;
+            poll_table[npoll].events = POLLIN | POLLERR;
+            poll_table[npoll++].revents = 0;
+        }
+        res = poll(poll_table, npoll, -1);
         if (res < 0) {
             error("poll(sock,dev) failed: %s", strerror(errno));
             break;
         }
 
-	if (devfd != -1 && poll_table[npoll - 1].revents) {
-	    /* if POLLERR was set, let read() handle it */
-	    if (handle_emuldev_command(devfd) < 0)
-		break;
-	}
-	if (sock == -1 || !poll_table[0].revents)
-	    continue;
+        if (devfd != -1 && poll_table[npoll - 1].revents) {
+            /* if POLLERR was set, let read() handle it */
+            if (handle_emuldev_command(devfd) < 0)
+                break;
+        }
+        if (sock == -1 || !poll_table[0].revents)
+            continue;
 
-	/* Beyond this point, npoll will always be 1 if the emulator device is
-	 * not open and 2 if it is, so we can just fill in the second slot of
-	 * the poll table unconditionally and rely on passing npoll to poll().
-	 */
+        /* Beyond this point, npoll will always be 1 if the emulator device is
+         * not open and 2 if it is, so we can just fill in the second slot of
+         * the poll table unconditionally and rely on passing npoll to poll().
+         */
 
         addr_len = sizeof(addr);
         fh = accept(sock, (struct sockaddr*)&addr, &addr_len);
@@ -450,35 +450,35 @@ static void main_loop(void)
         in_len = 0;
         do {
             debug("waiting for commands...");
-	    poll_table[0].fd = fh;
-	    poll_table[0].events = POLLIN;
-	    poll_table[0].revents = 0;
-	    poll_table[1].fd = devfd;
-	    poll_table[1].events = POLLIN | POLLERR;
-	    poll_table[1].revents = 0;
+            poll_table[0].fd = fh;
+            poll_table[0].events = POLLIN;
+            poll_table[0].revents = 0;
+            poll_table[1].fd = devfd;
+            poll_table[1].events = POLLIN | POLLERR;
+            poll_table[1].revents = 0;
 
-	    res = poll(poll_table, npoll, TPM_COMMAND_TIMEOUT);
+            res = poll(poll_table, npoll, TPM_COMMAND_TIMEOUT);
             if (res < 0) {
                 error("poll(fh) failed: %s", strerror(errno));
                 close(fh);
                 break;
             } else if (res == 0) {
-#ifdef TPMD_DISCONNECT_IDLE_CLIENTS	    
+#ifdef TPMD_DISCONNECT_IDLE_CLIENTS
                 info("connection closed due to inactivity");
                 close(fh);
                 break;
-#else		
+#else
                 continue;
-#endif		
+#endif
             }
 
-	    if (poll_table[1].revents) {
-		/* if POLLERR was set, let read() handle it */
-		if (handle_emuldev_command(devfd) < 0)
-		    break;
-	    }
-	    if (!poll_table[0].revents)
-		continue;
+            if (poll_table[1].revents) {
+                /* if POLLERR was set, let read() handle it */
+                if (handle_emuldev_command(devfd) < 0)
+                    break;
+            }
+            if (!poll_table[0].revents)
+                continue;
 
             in_len = read(fh, in, sizeof(in));
             if (in_len > 0) {
@@ -493,7 +493,7 @@ static void main_loop(void)
                     while (len < out_len) {
                         res = write(fh, &out[len], out_len - len);
                         if (res < 0) {
-                            error("write(%d) failed: %s", 
+                            error("write(%d) failed: %s",
                                   out_len - len, strerror(errno));
                             break;
                         }
