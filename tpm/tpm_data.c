@@ -151,9 +151,11 @@ void tpm_init_data(void)
     init_pcr_attr(22, TRUE, 0x04, 0x04);
     init_pcr_attr(23, TRUE, 0x1f, 0x1f);
   }
+#if TPM_NUM_PCR > 24
   for (i = 24; i < TPM_NUM_PCR; i++) {
     init_pcr_attr(i, TRUE, 0x00, 0x00);
   }
+#endif
   if (tpmConf & TPM_CONF_GENERATE_EK) {
     /* generate a new endorsement key */
     tpm_rsa_generate_key(&tpmData.permanent.data.endorsementKey, 2048);
