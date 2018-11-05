@@ -146,7 +146,7 @@ struct sockaddr_un addr;
 fh = socket(PF_UNIX, SOCK_STREAM, 0);
 if (fh < 0) { /* handle error */ }
 addr.sun_family = AF_UNIX;
-strncpy(addr.sun_path, "/var/run/tpm/tpmd_socket:0", sizeof(addr.sun_path));
+strncpy(addr.sun_path, "/var/run/tpm/tpmd_socket:0", sizeof(addr.sun_path)-1);
 res = connect(fh, (struct sockaddr*)&addr, sizeof(struct sockaddr_un));
 if (res < 0) { /* handle error */ }
 

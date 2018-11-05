@@ -58,7 +58,7 @@ static TSS_RESULT open_socket(const char *socket_name)
     return TDDL_E_FAIL;
   }
   addr.sun_family = AF_UNIX;
-  strncpy(addr.sun_path, socket_name, sizeof(addr.sun_path));
+  strncpy(addr.sun_path, socket_name, sizeof(addr.sun_path)-1);
   if (connect(tddli_dh, (struct sockaddr*)&addr, sizeof(struct sockaddr_un)) < 0) {
     tddli_driver_status = TDDL_DRIVER_FAILED;
     tddli_device_status = TDDL_DEVICE_NOT_FOUND;
