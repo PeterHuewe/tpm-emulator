@@ -307,7 +307,7 @@ static int init_socket(const char *name)
     }
     mkdirs(name);
     addr.sun_family = AF_UNIX;
-    strncpy(addr.sun_path, name, sizeof(addr.sun_path));
+    strncpy(addr.sun_path, name, sizeof(addr.sun_path)-1);
     umask(0177);
     if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
         error("bind(%s) failed: %s", addr.sun_path, strerror(errno));
@@ -332,10 +332,12 @@ static int init_device(const char *name)
     flags = fcntl(devfd, F_GETFL);
     if (flags == -1) {
         error("fcntl(%s, F_GETFL) failed: %s", name, strerror(errno));
+        close(devfd);
         return -1;
     }
     if (fcntl(devfd, F_SETFL, flags | O_NONBLOCK) == -1) {
         error("fcntl(%s, F_SETFL) failed: %s", name, strerror(errno));
+        close(devfd);
         return -1;
     }
 
@@ -401,8 +403,10 @@ static void main_loop(void)
     debug("initializing TPM emulator");
     if (tpm_emulator_init(tpm_startup, tpm_config) != 0) {
         error("tpm_emulator_init() failed");
-        close(sock);
-        unlink(opt_socket_name);
+        if (sock >= 0)
+            close(sock);
+        if (opt_socket_name)
+            unlink(opt_socket_name);
         exit(EXIT_FAILURE);
     }
 
@@ -460,19 +464,17 @@ static void main_loop(void)
             res = poll(poll_table, npoll, TPM_COMMAND_TIMEOUT);
             if (res < 0) {
                 error("poll(fh) failed: %s", strerror(errno));
-                close(fh);
                 break;
             } else if (res == 0) {
 #ifdef TPMD_DISCONNECT_IDLE_CLIENTS
                 info("connection closed due to inactivity");
-                close(fh);
                 break;
 #else
                 continue;
 #endif
             }
 
-            if (poll_table[1].revents) {
+            if (devfd != -1 && poll_table[1].revents) {
                 /* if POLLERR was set, let read() handle it */
                 if (handle_emuldev_command(devfd) < 0)
                     break;
@@ -508,8 +510,12 @@ static void main_loop(void)
     /* shutdown tpm emulator */
     tpm_emulator_shutdown();
     /* close socket */
-    close(sock);
-    unlink(opt_socket_name);
+    if (sock >= 0)
+        close(sock);
+    if (opt_socket_name)
+        unlink(opt_socket_name);
+    if (devfd >= 0)
+        close(devfd);
     info("main loop stopped");
 }
 
