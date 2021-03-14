@@ -71,9 +71,9 @@ static void init_timeouts(void)
   tpmData.permanent.data.tis_timeouts[1] = 2000000;
   tpmData.permanent.data.tis_timeouts[2] = 750000;
   tpmData.permanent.data.tis_timeouts[3] = 750000;
-  tpmData.permanent.data.cmd_durations[0] = 1000;
-  tpmData.permanent.data.cmd_durations[1] = 10000;
-  tpmData.permanent.data.cmd_durations[2] = 1000000;
+  tpmData.permanent.data.cmd_durations[0] = 3000000;
+  tpmData.permanent.data.cmd_durations[1] = 3000000;
+  tpmData.permanent.data.cmd_durations[2] = 600000000;
 }
 
 void tpm_init_data(void)
