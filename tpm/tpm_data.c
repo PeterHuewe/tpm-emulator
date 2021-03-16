@@ -67,13 +67,13 @@ static void init_nv_storage(void)
 static void init_timeouts(void)
 {
   /* for the timeouts we use the PC platform defaults */
-  tpmData.permanent.data.tis_timeouts[0] = 750;
-  tpmData.permanent.data.tis_timeouts[1] = 2000;
-  tpmData.permanent.data.tis_timeouts[2] = 750;
-  tpmData.permanent.data.tis_timeouts[3] = 750;
-  tpmData.permanent.data.cmd_durations[0] = 1;
-  tpmData.permanent.data.cmd_durations[1] = 10;
-  tpmData.permanent.data.cmd_durations[2] = 1000;
+  tpmData.permanent.data.tis_timeouts[0] = 750000;
+  tpmData.permanent.data.tis_timeouts[1] = 2000000;
+  tpmData.permanent.data.tis_timeouts[2] = 750000;
+  tpmData.permanent.data.tis_timeouts[3] = 750000;
+  tpmData.permanent.data.cmd_durations[0] = 3000000;
+  tpmData.permanent.data.cmd_durations[1] = 3000000;
+  tpmData.permanent.data.cmd_durations[2] = 600000000;
 }
 
 void tpm_init_data(void)
