@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <windows.h>
 #include <config.h>
-#include "tddl.h"
+#include "tddl-tpm-emulator.h"
 
 /* library lock */
 static CRITICAL_SECTION tddli_lock;
