@@ -46,7 +46,7 @@ The compilation and installation of the TPM emulator package is based on
 the CMake build environment (version 2.6 or better) and requires that the 
 GNU MP library (version 4.0 or better) is properly installed on your
 system. A working MinGW compiler suite is further required on Windows
-(see http://www.mingw.org/). To compile and install the package execute:
+(see https://www.mingw-w64.org/). To compile and install the package execute:
 
 # tar -xvzf tpm_emulator-X.Y.tar.gz
 # cd tpm_emulator-X.Y
